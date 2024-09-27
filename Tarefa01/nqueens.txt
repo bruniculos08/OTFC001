@@ -2,5 +2,6 @@
 (declare-const q2 Bool)
 (declare-const q3 Bool)
 (assert (or q1 q2 q3))
+(assert (or q1 q2 q3))
 (check-sat)
 (get-model)

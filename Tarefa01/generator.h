@@ -11,4 +11,4 @@ typedef struct Formula
 } formula;
 
 // Função para gerar arquivo SMT:
-void generateSMT(formula &f , string file_path);
+void formulaSMT(formula &f , string file_path);
