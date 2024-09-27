@@ -46,3 +46,16 @@ void fromFileGenerate3SAT(formula &f, string file_path) {
                 f.clauses.push_back(c_i);
         }
 }
+
+bool DPLL(formula f) {
+        // Vamos considerar 0 como 'true', 1 como  'false' e -1 com '*':
+        int *atoms = new int[f.number_of_variables];
+        for(int i = 0; i < f.number_of_variables; i++) atoms[i] = -1;
+        formula g = simplify(f);
+        if(g.clauses.size() == 0)
+                return true;
+}
+
+formula simplify(formula f) {
+
+}

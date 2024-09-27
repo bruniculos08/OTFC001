@@ -13,3 +13,7 @@ typedef struct Formula
 
 // Função para ler arquivo no formato CNF (retorna o número de clausulas):
 void fromFileGenerate3SAT(formula &f , string file_path);
+// Função DPLL:
+bool DPLL(formula f);
+// Função de simplificação:
+formula simplify(formula f); 
