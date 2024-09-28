@@ -1,22 +1,35 @@
 #include "solver.h"
 
 int main(void) {
+
         formula f;
-        fromFileGenerate3SAT(f, "sat.cnf");
+        fromFileGenerateSAT(f, "sat.cnf");
+        vector<int> atoms(f.number_of_variables, -1);
+        printFormula(f);
+        f = simplify(f, atoms);
+        printFormula(f);
+
         cout << f.clauses.size() << endl;
 
-        for(int i = 0; i < f.clauses.size(); i++) {
-                cout << "(";
-                for(int x_i : f.clauses[i]) {
-                        if(x_i >= 0) cout << x_i << " ";
-                        else cout << "¬" << abs(x_i) << " ";
-                }
-                cout << ")" << endl;
-        }
+        cout << "é satisfátivel? " << ((DPLL(f, atoms)) ? "sim" : "não") << endl;
         return 0;
 }
 
-void fromFileGenerate3SAT(formula &f, string file_path) {
+void printFormula(formula &f) {
+        for(int i = 0; i < f.clauses.size(); i++) {
+                if(i > 0) cout << " /\\ ";
+                cout << "(";
+                for(int j = 0; j < f.clauses[i].size(); j++) {
+                        if(f.clauses[i][j] >= 0) cout << f.clauses[i][j];
+                        else cout << "¬" << abs(f.clauses[i][j]);
+                        if(j < f.clauses[i].size() - 1) cout << " \\/ ";
+                }
+                cout << ")";
+        }
+        cout << endl;
+}
+
+void fromFileGenerateSAT(formula &f, string file_path) {
         ifstream my_file (file_path); 
         string line;
         char *cstr = new char[1024];
@@ -45,17 +58,60 @@ void fromFileGenerate3SAT(formula &f, string file_path) {
                 }
                 f.clauses.push_back(c_i);
         }
+        f.number_of_variables = number_of_variables;
 }
 
-bool DPLL(formula f) {
+bool DPLL(formula f, vector<int> atoms) {
         // Vamos considerar 0 como 'true', 1 como  'false' e -1 com '*':
-        int *atoms = new int[f.number_of_variables];
-        for(int i = 0; i < f.number_of_variables; i++) atoms[i] = -1;
-        formula g = simplify(f);
+        formula g = simplify(f, atoms);
         if(g.clauses.size() == 0)
                 return true;
+        // O bottom será representado aqui por um vector<int> de tamanho 0:
+        else for(vector<int> &c : g.clauses)
+                if(c.size() == 0) return false;
+        // Escolhendo um literal l tal que v(l) = *:
+        vector<int> l_clause;
+        for(vector<int> &c : f.clauses)
+                for(int l : c) 
+                        if(atoms[abs(l) - 1] == -1)
+                        {
+                                l_clause.push_back(l);
+                                goto label;
+                        }
+        label:
+        atoms[abs(l_clause[0]) - 1] = ((l_clause[0] > 0) ? 1 : 0);
+        g.clauses.push_back(l_clause);
+        // Tem que setar o valor dos atomos pra 1 ou 0;
+        if(DPLL(g, atoms))
+                return true;
+        g.clauses.pop_back();
+        l_clause[0] = l_clause[0] * -1;
+        atoms[abs(l_clause[0]) - 1] = ((l_clause[0] > 0) ? 1 : 0);
+        g.clauses.push_back(l_clause);
+        return DPLL(g, atoms);
 }
 
-formula simplify(formula f) {
-
+formula simplify(formula f, vector<int> &atoms) {
+        for(int i = 0; i < f.clauses.size(); i++) {
+                if(f.clauses[i].size() == 1) {
+                        int l = f.clauses[i][0];
+                        atoms[abs(l) - 1] = ((l > 0) ? 1 : 0);
+                        // cout << "clausula unitaria: " << l << endl;
+                        
+                        for(int j = 0; j < f.clauses.size(); j++) {
+                                for(int k = 0; k < f.clauses[j].size(); k++)
+                                        if(f.clauses[j][k] == l) {
+                                                f.clauses.erase(f.clauses.begin() + j);
+                                                j--;
+                                                break;
+                                        }
+                                        else if(f.clauses[j][k] == -l) {
+                                                f.clauses[j].erase(f.clauses[j].begin() + k);
+                                                k--;
+                                        }
+                        }
+                        i = -1;
+                }
+        }
+        return f;
 }
