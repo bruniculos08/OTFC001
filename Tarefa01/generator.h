@@ -11,4 +11,5 @@ typedef struct Formula
 } formula;
 
 // Função para gerar arquivo SMT:
+void nqueensSMT(int n, string file_path);
 void formulaSMT(formula &f , string file_path);

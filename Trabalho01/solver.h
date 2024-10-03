@@ -14,7 +14,7 @@ typedef struct Formula
 // Função para ler arquivo no formato CNF:
 void fromFileGenerateSAT(formula &f , string file_path);
 // Função DPLL:
-bool DPLL(formula f, vector<int> atoms);
+bool DPLL(formula f, vector<int> &atoms);
 // Função de simplificação:
 formula simplify(formula f, vector<int> &atoms); 
 // Função para imprimir fórmula:

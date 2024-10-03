@@ -5,13 +5,15 @@ int main(void) {
         formula f;
         fromFileGenerateSAT(f, "sat.cnf");
         vector<int> atoms(f.number_of_variables, -1);
-        printFormula(f);
-        f = simplify(f, atoms);
-        printFormula(f);
+        // printFormula(f);
+        // f = simplify(f, atoms);
+        // printFormula(f);
 
-        cout << f.clauses.size() << endl;
+        // cout << f.clauses.size() << endl;
+
 
         cout << "é satisfátivel? " << ((DPLL(f, atoms)) ? "sim" : "não") << endl;
+        for(int i = 0; i < atoms.size(); i++) cout << "q" << i + 1 << " = " << ((atoms[i] == -1) ? 0 : atoms[i]) << endl;
         return 0;
 }
 
@@ -61,7 +63,8 @@ void fromFileGenerateSAT(formula &f, string file_path) {
         f.number_of_variables = number_of_variables;
 }
 
-bool DPLL(formula f, vector<int> atoms) {
+bool DPLL(formula f, vector<int> &atoms) {
+        vector<int> atoms_copy = atoms;
         // Vamos considerar 0 como 'true', 1 como  'false' e -1 com '*':
         formula g = simplify(f, atoms);
         if(g.clauses.size() == 0)
@@ -84,11 +87,15 @@ bool DPLL(formula f, vector<int> atoms) {
         // Tem que setar o valor dos atomos pra 1 ou 0;
         if(DPLL(g, atoms))
                 return true;
+        atoms = atoms_copy;
         g.clauses.pop_back();
         l_clause[0] = l_clause[0] * -1;
         atoms[abs(l_clause[0]) - 1] = ((l_clause[0] > 0) ? 1 : 0);
         g.clauses.push_back(l_clause);
-        return DPLL(g, atoms);
+        if(DPLL(g, atoms))
+                return true;
+        atoms = atoms_copy;
+        return false;
 }
 
 formula simplify(formula f, vector<int> &atoms) {
