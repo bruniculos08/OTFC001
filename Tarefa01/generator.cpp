@@ -1,19 +1,12 @@
 #include "generator.h"
 
-int main(void) {
-        // formula f;
-        // f.number_of_variables = 3;
-        // vector<int> c = {1, 2, 3};
-        // f.clauses.push_back(c);
-        // f.clauses.push_back(c);
-        // formulaSMT(f, "nqueens.txt");
-        nqueensSMT(4, "nqueens.txt");
-
+int main(int argc, char *argv[]) {
+        nqueensSMT(stoi(argv[1]), string(argv[1]) + "queens.smt");
 }
 
 void nqueensSMT(int n, string file_path) {
         ofstream smt_file;
-        smt_file.open("nqueens.txt");
+        smt_file.open(file_path);
         if(smt_file) {
                 // Declaração dos átomos:
                 for(int i = 0; i < n; i++)
@@ -103,8 +96,7 @@ void nqueensSMT(int n, string file_path) {
 
 void formulaSMT(formula &f, string file_path) {
         ofstream smt_file;
-
-        smt_file.open("nqueens.txt");
+        smt_file.open(file_path);
 
         if(smt_file) {
                 for(int i = 0; i < f.number_of_variables; i++) {
