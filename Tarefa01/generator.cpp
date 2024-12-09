@@ -11,7 +11,7 @@ void nqueensSMT(int n, string file_path) {
                 // Declaração dos átomos:
                 for(int i = 0; i < n; i++)
                         for(int j = 0; j < n; j++)
-                                smt_file << "(declare-const q" << i << j << " Bool)" << endl; 
+                                smt_file << "(declare-const q" << i << "-" << j << " Bool)" << endl; 
                 // Cláusulas das linhas:
                 smt_file << "\n; linhas (restrição de ter pelos menos uma rainha por linha)" << endl;
                 for(int y = 0; y < n; y++) { // <- linhas
@@ -27,7 +27,7 @@ void nqueensSMT(int n, string file_path) {
                         smt_file << "(assert (and";
                         for(int x_i = 0; x_i < n - 1; x_i++) { // <- colunas
                                 for(int x_j = x_i + 1; x_j < n; x_j++) { // <- colunas
-                                        smt_file << "(not (and" << " q" << y << x_i << " q" << y << x_j << "))";
+                                        smt_file << "(not (and" << " q" << y << "-" << x_i << " q" << y << "-" << x_j << "))";
                                 }
                         }
                         smt_file << "))" << endl;
@@ -38,7 +38,7 @@ void nqueensSMT(int n, string file_path) {
                         smt_file << "(assert (and";
                         for(int y_i = 0; y_i < n - 1; y_i++) { // <- linhas
                                 for(int y_j = y_i + 1; y_j < n; y_j++) { // <- linhas
-                                        smt_file << "(not (and" << " q" << y_i << x << " q" << y_j << x << "))";
+                                        smt_file << "(not (and" << " q" << y_i << "-"  << x << " q" << y_j << "-" << x << "))";
                                 }
                         }
                         smt_file << "))" << endl;
@@ -50,7 +50,7 @@ void nqueensSMT(int n, string file_path) {
                         smt_file << "(assert (and";
                         for(int x_i = x, y_i = 0; y_i < n && x_i < n; x_i++, y_i++) {
                                 for(int x_j = x_i + 1, y_j = y_i + 1; y_j < n && x_j < n; x_j++, y_j++) {
-                                        smt_file << "(not (and" << " q" << y_i << x_i << " q" << y_j << x_j << "))";
+                                        smt_file << "(not (and" << " q" << y_i << "-" << x_i << " q" << y_j << "-" << x_j << "))";
                                 }
                         }
                         smt_file << "))" << endl;
@@ -61,7 +61,7 @@ void nqueensSMT(int n, string file_path) {
                         smt_file << "(assert (and";
                         for(int x_i = 0, y_i = y; y_i < n && x_i < n; x_i++, y_i++) {
                                 for(int x_j = x_i + 1, y_j = y_i + 1; y_j < n && x_j < n; x_j++, y_j++) {
-                                        smt_file << "(not (and" << " q" << y_i << x_i << " q" << y_j << x_j << "))";
+                                        smt_file << "(not (and" << " q" << y_i << "-" << x_i << " q" << y_j << "-" << x_j << "))";
                                 }
                         }
                         smt_file << "))" << endl;
@@ -72,7 +72,7 @@ void nqueensSMT(int n, string file_path) {
                         smt_file << "(assert (and";
                         for(int x_i = x, y_i = n-1; (0 <= y_i) && (x_i < n); x_i++, y_i--) {
                                 for(int x_j = x_i + 1, y_j = y_i - 1;  (0 <= y_j) && (x_j < n); x_j++, y_j--) {
-                                        smt_file << "(not (and" << " q" << y_i << x_i << " q" << y_j << x_j << "))";
+                                        smt_file << "(not (and" << " q" << y_i << "-" << x_i << " q" << y_j << "-" << x_j << "))";
                                 }
                         }
                         smt_file << "))" << endl;
@@ -83,7 +83,7 @@ void nqueensSMT(int n, string file_path) {
                         smt_file << "(assert (and";
                         for(int x_i = 0, y_i = y; (0 <= y_i) && (x_i < n); x_i++, y_i--) {
                                 for(int x_j = x_i + 1, y_j = y_i - 1; (0 <= y_j) && (x_j < n); x_j++, y_j--) {
-                                        smt_file << "(not (and" << " q" << y_i << x_i << " q" << y_j << x_j << "))";
+                                        smt_file << "(not (and" << " q" << y_i << "-" << x_i << " q" << y_j << "-" << x_j << "))";
                                 }
                         }
                         smt_file << "))" << endl;
